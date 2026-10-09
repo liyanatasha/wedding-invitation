@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - Guest List</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 p-6">
+  <div class="max-w-5xl mx-auto">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold text-gray-800">Wedding Guest Manager</h1>
+      <a href="/admin/export?pw=<%= pw %>" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium">Download CSV for Excel</a>
+    </div>
+
+    <!-- Summary Stats -->
+    <div class="grid grid-cols-4 gap-4 mb-6">
+      <div class="bg-white p-4 rounded-xl border border-gray-200">
+        <p class="text-xs text-gray-500 uppercase font-semibold">Total Invited Pax</p>
+        <p class="text-2xl font-bold text-gray-800 mt-1"><%= stats.totalInvitedPax %></p>
+      </div>
+      <div class="bg-white p-4 rounded-xl border border-gray-200">
+        <p class="text-xs text-green-600 uppercase font-semibold">Confirmed Attending</p>
+        <p class="text-2xl font-bold text-green-600 mt-1"><%= stats.totalConfirmedPax %></p>
+      </div>
+      <div class="bg-white p-4 rounded-xl border border-gray-200">
+        <p class="text-xs text-red-600 uppercase font-semibold">Declined Invitations</p>
+        <p class="text-2xl font-bold text-red-600 mt-1"><%= stats.totalDeclined %></p>
+      </div>
+      <div class="bg-white p-4 rounded-xl border border-gray-200">
+        <p class="text-xs text-yellow-600 uppercase font-semibold">Pending Responses</p>
+        <p class="text-2xl font-bold text-yellow-600 mt-1"><%= stats.totalPending %></p>
+      </div>
+    </div>
+
+    <!-- Guest Table -->
+    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+      <table class="w-full text-left border-collapse text-sm">
+        <thead class="bg-gray-100 border-b border-gray-200 text-gray-600 text-xs uppercase">
+          <tr>
+            <th class="p-3">Guest Name</th>
+            <th class="p-3">Link</th>
+            <th class="p-3">Status</th>
+            <th class="p-3">Confirmed / Max</th>
+            <th class="p-3">Dietary / Notes</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          <% guests.forEach(g => { %>
+            <tr class="hover:bg-gray-50">
+              <td class="p-3 font-medium text-gray-900"><%= g.name %></td>
+              <td class="p-3 text-blue-600 text-xs">
+                <a href="/to/<%= g.slug %>" target="_blank" class="underline">/to/<%= g.slug %></a>
+              </td>
+              <td class="p-3">
+                <span class="px-2 py-0.5 rounded-full text-xs font-semibold
+                  <%= g.status === 'attending' ? 'bg-green-100 text-green-700' : '' %>
+                  <%= g.status === 'declined' ? 'bg-red-100 text-red-700' : '' %>
+                  <%= g.status === 'pending' ? 'bg-yellow-100 text-yellow-700' : '' %>">
+                  <%= g.status %>
+                </span>
+              </td>
+              <td class="p-3"><%= g.attending_pax %> / <%= g.max_pax %></td>
+              <td class="p-3 text-gray-500 text-xs max-w-xs truncate"><%= g.notes || '-' %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>
